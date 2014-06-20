@@ -34,7 +34,7 @@ public class TableSync extends TimerTask
 	private static final int SLEEP_SECONDS = 5;  // how long does the main thread sleep
 	
 	private static final int secondsOfDelay = 1 ;  //time between task executions, where task is processing work records
-	private static final int startDelay = 5;   //initially
+	private static final int startDelay = 5;   //initially in millisecs
 	
 	//MongoDB data
 	
@@ -120,6 +120,10 @@ public class TableSync extends TimerTask
 	}//end main
 
 	//*****************************************************************************
+	
+	//get all the work records from the mysql database, and
+	//use them to update mongodb
+	
 	private static void processAllWorkRecords(Statement stmt)
 			throws SQLException {
 		String sql;
@@ -188,7 +192,6 @@ public class TableSync extends TimerTask
 				worklist.add(workRecord.getId());
 			}
 			else {
-				//log error
 				System.out.println("MongoDB " + operation + " fail; id=" + workRecord.getId());
 			}
 		}
@@ -222,7 +225,7 @@ public class TableSync extends TimerTask
 	 
 		WriteResult result =coll.update(searchQuery, doc);
 		
-		printResult(result, "update");
+		printResultOfMongoOperation(result, "update");
 		return result.getError() == null ? MONGO_SUCCESS : MONGO_FAIL ;
 	}
 	//inserts into the events collection a new document
@@ -234,7 +237,7 @@ public class TableSync extends TimerTask
 				append("event_venue", workRecord.getEv_venue());
 
 		WriteResult result = coll.insert(doc);
-		printResult(result, "insert");
+		printResultOfMongoOperation(result, "insert");
 		return result.getError() == null ? MONGO_SUCCESS : MONGO_FAIL ;
 	}
 
@@ -245,11 +248,11 @@ public class TableSync extends TimerTask
 			doc.append("event_id", workRecord.getEv_id());
 
 			WriteResult result = coll.remove(doc);
-			printResult(result, "delete");
+			printResultOfMongoOperation(result, "delete");
 			return result.getError() == null ? MONGO_SUCCESS : MONGO_FAIL ;
 		}
 		
-		private static void printResult(WriteResult result, String operation) {
+		private static void printResultOfMongoOperation(WriteResult result, String operation) {
 			if (result.getError() == null) {
 				System.out.println("Document " + operation + " sucess in MongoDB");
 			}
