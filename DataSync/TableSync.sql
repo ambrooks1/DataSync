@@ -25,16 +25,7 @@
   
   )
   
-  INSERT INTO events (event_id, event_name, event_datetime, event_venue)
-   VALUES (1, 'Michael Buble World Tour',1234565, 'Madison Square Garden')  
-  
-  INSERT INTO events (event_id, event_name, event_datetime, event_venue)
-   VALUES (2, 'Joe Jackson Asian Tour',288288, 'Boston Garden') 
-   
-  UPDATE events SET event_venue = 'The Toilet Bowl' WHERE event_id=1
-   UPDATE events SET event_venue = 'The Super Bowl' WHERE event_id=2
-   
-  DELETE from events WHERE event_id=1
+ 
   
                -- create new records in work table using a trigger
    DELIMITER $$
@@ -82,4 +73,15 @@
    END$$
    DELIMITER ;
    	
+   -- sample data to insert into events table
+   
+   INSERT INTO events (event_id, event_name, event_datetime, event_venue)
+   VALUES (1, 'Michael Buble World Tour',1234565, 'Madison Square Garden')  
   
+   INSERT INTO events (event_id, event_name, event_datetime, event_venue)
+   VALUES (2, 'Joe Jackson Asian Tour',288288, 'Boston Garden') 
+   
+   UPDATE events SET event_venue = 'The Toilet Bowl' WHERE event_id=1
+   UPDATE events SET event_venue = 'The Super Bowl' WHERE event_id=2
+   
+   DELETE from events WHERE event_id=1
