@@ -148,23 +148,34 @@ public class SQL {
 		return worklist;
 	}
 	//*****************************************************************************
+	
+	//wrap in single quote and convert apostrophe to double
+	private String conversion(String s) {
+		return "'" + s.replaceAll("'","''")    +  "'";
+	}
 
 	//used only for unit testing purposes
-	public static void insertWorkRecord(WorkRecord wr, Statement stmt) throws SQLException {
+	public  void insertWorkRecord(WorkRecord wr) throws SQLException {
 		
 		Event event = wr.getEvent();
 		String sql = 
-		"INSERT INTO work (changetype, createtime, completed, ev_id, ev_name, ev_datetime, ev_venue) "+
+		"INSERT INTO work (changetype, completed, ev_id, ev_name, ev_datetime, ev_venue) "+
 		" VALUES ("  +
-				wr.getChangetype() + "," +
-				wr.getCreateTime() + "," +
+				"'" + wr.getChangetype() + "' ," +
+				
 				wr.getCompleted()  + "," +
 				
 				event.getId()      + "," +
-				event.getName()    + "," +
+				
+				conversion(event.getName())    +  "," +
+				
 				event.getDatetime()    + "," +
-				event.getVenue()  +
-		")";
+				
+                conversion(event.getVenue())  +
+				
+	         	")";
+		
+		System.out.println(sql);
 		stmt.executeUpdate(sql);
 		System.out.println("Executed sql: " + sql);
 	}
@@ -173,17 +184,34 @@ public class SQL {
 	// get a record from the work table that matches this event
 	//we are looking to get the work record id so that we can delete it subsequently
 	
-	WorkRecord getWorkRecord(Event event, Statement stmt) {
-		String sql ;
-		return null;
+	public WorkRecord getWorkRecord(Event event) throws SQLException {
+		
+		String sql ="SELECT  id, changetype, createtime, completed, ev_id, ev_name, ev_datetime, ev_venue" +
+	                " FROM work WHERE " +
+				          "ev_id= "   + event.getId() + " AND " +
+				          "ev_name= " + conversion(event.getName()) + " AND " +
+				          "ev_datetime= " + event.getDatetime() + " AND " +
+				          "ev_venue= " + conversion(event.getVenue()) ;
+		
+		WorkRecord workRecord=null;
+		
+		ResultSet rs = stmt.executeQuery(sql);
+		if(rs.next()){
+			 workRecord = createWorkRecord(rs);
+			
+		}
+		rs.close();
+		return workRecord;
 	}
 	//used only for unit testing purposes
-	public static void deleteWorkRecord(int workId, Statement stmt)
+	public  void deleteWorkRecord(int workId) throws SQLException
 	{
-		
+		final String updateStr="DELETE FROM work WHERE id=" + workId;
+		stmt.executeUpdate(updateStr);
+		System.out.println("Executed sql: " + updateStr);
 	}
 	
-	public  void updateWorkRecord( int workId)
+	public  void updateWorkRecordAsComplete( int workId)
 			throws SQLException {
 		System.out.println("Performing updateWorkRecords");
 
@@ -209,20 +237,11 @@ public class SQL {
 	      }
 	}
 	
-	public void performSomeSQLOperations(String sql[]) {
-		 System.out.println("performing some SQL operations");
-		// FIRST, we want to insert, update and delete a whole bunch of 
-		// records into the mySQL events table
-		// using java JDBC
-		
+	//used in testing
+	public void performSomeSQLOperations(String sql[]) throws SQLException {
 		  for (int i=0; i < sql.length; i++) {
-			  
-			  try {
+			    System.out.println("performing SQL operation : " + sql[i]);
 				stmt.executeUpdate(sql[i]);
-			  } catch (SQLException e) {
-				
-				e.printStackTrace();
-			  }
 		  }
 	
 	}

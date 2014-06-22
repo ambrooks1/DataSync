@@ -1,9 +1,6 @@
 package syncdata;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -160,7 +157,7 @@ public class TableSync extends TimerTask
 		System.out.println("MongoDB result=" + result);
 		if (result==Mongo.MONGO_SUCCESS) {
 			System.out.println("MongoDB " + operation + " success; id=" + workRecord.getId());
-			sql.updateWorkRecord( workRecord.getId());
+			sql.updateWorkRecordAsComplete( workRecord.getId());
 		}
 		else {
 			System.out.println("MongoDB " + operation + " fail; id=" + workRecord.getId());
