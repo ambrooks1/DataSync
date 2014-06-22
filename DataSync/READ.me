@@ -1,0 +1,31 @@
+Building and Running the Application
+--------------------------------------------------------
+
+Project name is DataSync.  Can be run from eclipse
+
+Source code is 5 java files in the syncdata package, 
+and two test java files in the test package.
+
+There is a sql file named TableSync.sql.
+Running these sql statements creates two tables : 'events' and 'work'
+Three triggers are then created, which cause changes in 'events' to
+create new records in 'work'.
+
+Two libraries are required :
+      mysql-connector-java-5.1.29-bin.jar
+      mongo-2.10.1.jar
+      
+In SQL.java, I have hardcoded the name of the sql database as
+"crowd-surge" but you can change it if you like. The database
+used should match this name. ( I am running as root with no password, but
+this can also be changed of course, in the same file.)
+
+      Step 1 - start mysql server, and mongd
+      
+      Step 2-  Run the unit test
+      
+      Step 3-  Run TableSync.java. This is the program that keeps MySQL and mongo in sync.
+      
+      Step 4-  Run the Integration Test, to see if TableSync works properly.
+      
+      Step 5-  Optionaally run the Unit Tests again.
