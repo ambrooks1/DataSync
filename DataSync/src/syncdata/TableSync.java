@@ -28,43 +28,20 @@ public class TableSync extends TimerTask
 	private static final int secondsOfDelay = 1 ;  //time between task executions, where task is processing work records
 	private static final int startDelay = 5;   //initially in millisecs
 
-	//SQL data
-
-	private static Connection conn = null;
-	private static Statement  stmt = null;
-
+	
 	private static Mongo mongo=null;
+	private static SQL sql=null;
 	
 	//*********************************************************************************
 
 	public TableSync() {
-		//get connections to mongoDB and mySQL
-		mongo = new Mongo();
-		getSQLConnection();
+		//get connections to mongoDB using the events collection
+		// and mySQL
+		
+		mongo = new Mongo("events");
+		sql = new SQL();
 	}
-	//*********************************************************************************
-	//instatiate connection and statement
-	private void getSQLConnection() {
-		try{
-			Class.forName(JDBCHelper.JDBC_DRIVER);
-			System.out.println("Connecting to database...");
-			conn = DriverManager.getConnection(JDBCHelper.DB_URL,  JDBCHelper.USER,  JDBCHelper.PASS);
-
-			System.out.println("Creating statement...");
-			stmt = conn.createStatement();
-
-		}
-		catch(SQLException se){
-			//Handle errors for JDBC
-			se.printStackTrace();
-			System.exit(1);
-		}
-		catch(Exception e){
-			//Handle errors for Class.forName
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
+	
 	//*****************************************************************************
 	public static void main(String[] args) {
 		execute();
@@ -116,7 +93,7 @@ public class TableSync extends TimerTask
 		//get the work records which have not yet been processed in order of creation
 		//System.out.println("Process all work records");
 
-		List<WorkRecord> worklist = JDBCHelper.getWorkList(stmt);
+		List<WorkRecord> worklist = sql.getWorkList();
 		
 		for (int i=0; i < worklist.size(); i++) {
 		
@@ -169,7 +146,6 @@ public class TableSync extends TimerTask
 		try {
 			updateWorkRecordOnSuccess( workRecord, result, "delete");
 		} catch (SQLException e) {
-			
 			e.printStackTrace();
 		}
 	}
@@ -184,7 +160,7 @@ public class TableSync extends TimerTask
 		System.out.println("MongoDB result=" + result);
 		if (result==Mongo.MONGO_SUCCESS) {
 			System.out.println("MongoDB " + operation + " success; id=" + workRecord.getId());
-			JDBCHelper.updateWorkRecord( workRecord.getId(), stmt);
+			sql.updateWorkRecord( workRecord.getId());
 		}
 		else {
 			System.out.println("MongoDB " + operation + " fail; id=" + workRecord.getId());
@@ -195,27 +171,9 @@ public class TableSync extends TimerTask
 	public void run() {
 		try{
 			processAllWorkRecords();
-
 		}
-		catch(SQLException se)
-		{
-			//Handle errors for JDBC
-			se.printStackTrace();
-
-			try{
-				if(stmt!=null)
-					stmt.close();
-			}
-			catch(SQLException se2){
-			}// nothing we can do
-			try{
-				if(conn!=null)
-					conn.close();
-			}catch(SQLException se3){
-				se3.printStackTrace();
-			}
-
-			System.exit(1);
+		catch(SQLException se){
+		 sql.handleSQLerrors(se);
 		}
 	}
 	//*****************************************************************************

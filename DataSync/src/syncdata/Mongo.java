@@ -20,11 +20,11 @@ public class Mongo{
 		
 	private  DBCollection coll = null;
 	
-	public  Mongo()
+	public  Mongo(String collectionName)
 	{
-		coll = getCollection("events");
+		coll = getCollection(collectionName);
 		if (coll==null) {
-			System.out.println("Problem creating or getting events collection");
+			System.out.println("Problem creating or getting collection : "+ collectionName);
 			System.exit(1);
 		}
 	}
@@ -114,13 +114,17 @@ public class Mongo{
 		return eventlist;
 		
 	}
+	//remove all documents from the collection
+	public  void emptyCollection() {
+		DBCursor cursor = coll.find();
+		while (cursor.hasNext()) {
+			coll.remove(cursor.next());
+		}
+	}
 	//*****************************************************************************
 
 	public static int getResult(WriteResult result, String operation) {
-		if (result.getError() == null) {
-			System.out.println("Document " + operation + " sucess in MongoDB");
-		}
-		else {
+		if (result.getError() != null) {
 			System.out.println("Document " + operation + " fail in MongoDB " + result.getError());
 		}
 		return result.getError() == null ? Mongo.MONGO_SUCCESS : Mongo.MONGO_FAIL ;

@@ -1,5 +1,13 @@
 package syncdata;
 
+//This class represents the Work table. Work records are generated in the
+//SQL database by triggers linked to updates and deletes on the events table
+
+// id : 			unique identifier
+// changetype :    can be NEW, EDIT or DELETE
+// createTime :    is the time that the work table record was created
+// completed:      has the change been propagated to mongoDB yet?
+
 public class WorkRecord {
 
 	 private int id  ;
