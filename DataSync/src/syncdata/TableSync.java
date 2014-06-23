@@ -20,7 +20,7 @@ import java.util.TimerTask;
 public class TableSync extends TimerTask
 {
 	//Timer data
-	private static final int SLEEP_SECONDS = 5;  // how long does the main thread sleep
+	private static final int SLEEP_SECONDS = 2;  // how long does the main thread sleep
 
 	private static final int secondsOfDelay = 1 ;  //time between task executions, where task is processing work records
 	private static final int startDelay = 5;   //initially in millisecs

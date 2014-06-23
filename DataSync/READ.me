@@ -1,10 +1,28 @@
 Building and Running the Application
 --------------------------------------------------------
 
-Project name is DataSync.  Can be run from eclipse
-
+Project name is DataSync; can be run from eclipse.
+ Located in "DataSync.jar".
+ 
+ ----------------------------------------------------------------------
+.project
+READ.me
+DOCUMENTATION.txt
+TableSync.sql
+.gitignore
+.classpath
+syncdata/
+syncdata/WorkRecord.java
+syncdata/SQL.java
+syncdata/Event.java
+syncdata/Mongo.java
+syncdata/TableSync.java
+test/
+test/UnitTests.java
+test/IntegrationTest.java
+ -----------------------------------------------------------------------
 Source code is 5 java files in the syncdata package, 
-and two test java files in the test package.
+plus the two test java files in the test package.
 
 There is a sql file named TableSync.sql.
 Running these sql statements creates two tables : 'events' and 'work'
@@ -15,6 +33,28 @@ Two libraries are required :
       mysql-connector-java-5.1.29-bin.jar
       mongo-2.10.1.jar
       
+  STEP TO BUILD
+  
+ 0. Place the attached "TableSync.jar" on your desktop folder ( or wherever else is convenient).
+ 
+ 1. start up eclipse, and go to the package explorer.
+ 
+ 2. Right-click, "New Java Project", name it "DataSync" ( or something else, if you want.)
+ 
+ 3. Once the java project has been created, select the "src" source folder ( which was created by default in step 2).
+ 
+ 4. Right-click, "Import", "archive file", and browse to the desktop or wherever else you chose to park the .jar file.
+ 
+ 
+ After importing the archive file, you should see the "search" and "test packages under the source folder, with their
+ associated java files.
+ 
+ 5. Now select the PROJECT folder, and right-click, "Build path", "Select external archives" and browse the libraries,
+ and add them.  You should then seee the two libraries appearing under "Referenced Libraries" in the Package Explorer.
+ 
+ 6. Optionally, to run the unit tests, select the PROJECT folder, and right-click, "Build path", "Add Libraries" and add
+ Junit.
+ 
 In SQL.java, I have hardcoded the name of the sql database as
 "crowd-surge" but you can change it if you like. The database
 used should match this name. ( I am running as root with no password, but
@@ -28,4 +68,4 @@ this can also be changed of course, in the same file.)
       
       Step 4-  Run the Integration Test, to see if TableSync works properly.
       
-      Step 5-  Optionaally run the Unit Tests again.
+      Step 5-  Optionally run the Unit Tests again.
