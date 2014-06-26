@@ -59,7 +59,7 @@ public class IntegrationTest {
 			"INSERT INTO events (event_id, event_name, event_datetime, event_venue)" +
 			"  VALUES (222, 'Joe Shmoe European Tour',288288, 'Vienna Garden') ",
 			
-			"UPDATE events SET event_venue = 'The Toilet Bowl' WHERE event_id=111",
+			"UPDATE events SET event_venue = 'The Rose Bowl' WHERE event_id=111",
 			
 			"UPDATE events SET event_venue = 'The Super Bowl' WHERE event_id=222",
 			
